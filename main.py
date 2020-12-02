@@ -4,7 +4,7 @@ from importlib import import_module
 
 def run_main(problem_number):
     module = import_module(f"code.solution_{problem_number}")
-    module.main()
+    module.main(problem_number)
 
 
 if __name__ == '__main__':

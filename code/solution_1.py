@@ -8,7 +8,7 @@ DATA_PATH = Path(__file__).resolve().parents[1] / "data"
 
 def read_input(path: Path) -> List[int]:
     return list(map(int, path.read_text().strip("\n").split("\n")))
-    
+
 
 def main(problem_number: int):
     data = read_input(DATA_PATH / f"input_{problem_number}.txt")

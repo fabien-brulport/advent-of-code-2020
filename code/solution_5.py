@@ -24,21 +24,22 @@ class BoardingPass:
             if char == upper_char:
                 lower_idx += len_part
         return int(lower_idx)
- 
 
     def get_position(self) -> Tuple[int, int]:
-        return (self._get_index(self.row_characters, "B"), 
-        self._get_index(self.col_characters, "R"))
+        return (
+            self._get_index(self.row_characters, "B"),
+            self._get_index(self.col_characters, "R"),
+        )
 
     def get_seat_id(self) -> int:
         row, col = self.get_position()
         return row * 8 + col
-           
 
 
 def read_input(path: Path) -> List[BoardingPass]:
     lines = path.read_text().strip("\n").split("\n")
     return [BoardingPass.from_str(line) for line in lines]
+
 
 def main(problem_number: int):
     data = read_input(DATA_PATH / f"input_{problem_number}.txt")
@@ -49,5 +50,3 @@ def main(problem_number: int):
     for seat_id, seat_id_next in zip(all_seat_ids[:-1], all_seat_ids[1:]):
         if seat_id_next - seat_id != 1:
             print(seat_id + 1)
-
-

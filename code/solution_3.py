@@ -1,7 +1,6 @@
 from functools import reduce
 import operator
 from pathlib import Path
-from typing import List
 
 import numpy as np
 

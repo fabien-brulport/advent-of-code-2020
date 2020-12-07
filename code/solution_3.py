@@ -1,28 +1,26 @@
 from functools import reduce
 import operator
 from pathlib import Path
-
-import numpy as np
+from typing import List
 
 
 DATA_PATH = Path(__file__).resolve().parents[1] / "data"
 
 
-def read_input(path: Path) -> np.ndarray:
+def read_input(path: Path) -> List[List[str]]:
     data = path.read_text().strip("\n").split("\n")
-    return np.array([list(line) for line in data])
+    return [list(line) for line in data]
 
 
-def compute_n_trees(grid: np.ndarray, delta_x: int, delta_y: int) -> int:
+def compute_n_trees(grid: List[List[str]], delta_x: int, delta_y: int) -> int:
+    heigth, width = len(grid), len(grid[0])
     position_x, position_y = 0, 0
     n_trees = 0
     while True:
-        position_x, position_y = (position_x + delta_x) % grid.shape[
-            1
-        ], position_y + delta_y
-        if position_y >= len(grid):
+        position_x, position_y = (position_x + delta_x) % width, position_y + delta_y
+        if position_y >= heigth:
             return n_trees
-        if grid[position_y, position_x] == "#":
+        if grid[position_y][position_x] == "#":
             n_trees += 1
 
 

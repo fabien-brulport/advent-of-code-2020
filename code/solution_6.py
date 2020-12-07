@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
 
 
 DATA_PATH = Path(__file__).resolve().parents[1] / "data"

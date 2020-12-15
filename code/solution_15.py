@@ -1,4 +1,3 @@
-from collections import defaultdict
 from pathlib import Path
 from typing import List
 
@@ -11,22 +10,26 @@ def read_input(path: Path) -> List[int]:
 
 
 def play_game(data: List[int], stop_turn: int) -> int:
-    """Return the stop_turn'th number spoken"""
-    spoken_numbers = defaultdict(list)
-    for turn, number in enumerate(data):
-        new_number = number
-        spoken_numbers[number].append(turn)
+    """Return the number spoken after ``stop_turn`` rounds of game"""
 
-    for turn in range(turn + 1, stop_turn):
-        index_list = spoken_numbers[new_number]
-        if len(index_list) == 1:
-            new_number = 0
+    # Initialization
+    turns = {number: index for index, number in enumerate(data)}
+    number = data[-1]
+
+    for turn in range(len(turns), stop_turn):
+        # Keeping track of the last_number is needed to have both indexes
+        last_number = number
+        last_number_turn = turn - 1
+
+        if last_number in turns:
+            number = last_number_turn - turns[last_number]
         else:
-            new_number = index_list[-1] - index_list[-2]
+            number = 0
 
-        spoken_numbers[new_number].append(turn)
+        # Update the index of the last number
+        turns[last_number] = last_number_turn
 
-    return new_number
+    return number
 
 
 def main(problem_number: int):

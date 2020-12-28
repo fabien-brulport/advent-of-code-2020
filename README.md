@@ -14,4 +14,9 @@ for instance
 python main.py 10
 ```
 
-No extra dependencies are required, all the problems are solved with the Python standard library.
+Except for the problem 19, no extra dependencies are required, all the other problems are solved with the Python standard library.
+
+Problem 19 needs the `regex` package, because `re` does not handle recursive pattern. It can be installed with:
+```bash
+pip install regex
+```

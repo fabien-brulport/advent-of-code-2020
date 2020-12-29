@@ -1,50 +1,80 @@
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 
 DATA_PATH = Path(__file__).resolve().parents[1] / "data"
 
 
 def read_input(path: Path) -> List[int]:
-    # return list(map(int, "389125467".strip("\n")))
     return list(map(int, path.read_text().strip("\n")))
 
 
-def play_one_round(data: List[int], max_value: int):
-    current_value = data.pop(0)
-    data.append(current_value)
-    n1 = data.pop(0)
-    n2 = data.pop(0)
-    n3 = data.pop(0)
+def play_one_round(
+    linked_list: Dict[int, int], current_cup: int, max_value: int
+) -> int:
+    """
+    Update the linked list by playing one round: select the 3 cups after
+    the current_cup, move it behind the destination cup, and return the next
+    cup.
+    """
+    # The 3 elements that are moved
+    n1 = linked_list[current_cup]
+    n2 = linked_list[n1]
+    n3 = linked_list[n2]
 
-    current_value = (current_value - 2) % max_value + 1
-    while (current_value == n1) or (current_value == n2) or (current_value == n3):
-        current_value = (current_value - 2) % max_value + 1
+    # Find destination number
+    destination = current_cup
+    destination = (destination - 2) % max_value + 1
+    while (destination == n1) or (destination == n2) or (destination == n3):
+        destination = (destination - 2) % max_value + 1
 
-    idx = data.index(current_value)
-    print(idx, current_value)
-    data[idx + 1 : idx + 1] = [n1, n2, n3]
+    # Next cup
+    next_cup = linked_list[n3]
+
+    # Update the linked list at once
+    linked_list[current_cup], linked_list[n3], linked_list[destination] = (
+        next_cup,
+        linked_list[destination],
+        n1,
+    )
+
+    return next_cup
 
 
 def main(problem_number: int):
     # Part 1
     data = read_input(DATA_PATH / f"input_{problem_number}.txt")
-    for _ in range(100):
-        play_one_round(data, 9)
-        print(data)
-    index_1 = data.index(1)
-    print("".join(map(str, (data[index_1:] + data[:index_1])[1:])))
+    linked_list = {k: v for k, v in zip(data[:-1], data[1:])}
+    linked_list[data[-1]] = data[0]
 
-    # # Part 2
-    # data = read_input(DATA_PATH / f"input_{problem_number}.txt")
-    # n_cups = 1_000_000
-    # n_rounds = 100_000
-    # for i in range(max(data) + 1, n_cups + 1):
-    #     data.append(i)
-    # for _ in range(n_rounds):
-    #     play_one_round(data, n_cups)
-    # index_1 = data.index(1)
-    # print(index_1)
-    # print(data[index_1 - 10 : index_1 + 10])
-    # print(data[: index_1 + 10])
-    # print(data[(index_1 + 1) % len(data)] * data[(index_1 + 2) % len(data)])
+    # Play 100 rounds
+    value = data[0]
+    for _ in range(100):
+        value = play_one_round(linked_list, value, max(data))
+
+    # Build the result: the cups that follow the cup 1
+    result = []
+    cup = 1
+    for _ in range(len(linked_list) - 1):
+        cup = linked_list[cup]
+        result.append(cup)
+    print("".join(map(str, result)))
+
+    # Part 2
+    linked_list = {k: v for k, v in zip(data[:-1], data[1:])}
+    n_cups = 1_000_000
+    n_rounds = 10_000_000
+
+    # Complete the linled_list to get a length of n_cups
+    key = data[-1]
+    for i in range(max(data) + 1, n_cups + 1):
+        linked_list[key] = i
+        key = i
+    linked_list[key] = data[0]
+
+    # Play 10 000 000 rounds
+    value = data[0]
+    for _ in range(n_rounds):
+        value = play_one_round(linked_list, value, n_cups)
+
+    print(linked_list[1] * linked_list[linked_list[1]])
